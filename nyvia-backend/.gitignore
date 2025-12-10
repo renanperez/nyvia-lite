@@ -1,0 +1,28 @@
+# Variáveis de ambiente (secrets)
+.env
+.env.local
+.env.production
+
+# Dependências
+node_modules/
+
+# Banco de dados
+*.db
+*.sqlite
+*.sqlite3
+db/*.db
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+
+# Sistema operacional
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
