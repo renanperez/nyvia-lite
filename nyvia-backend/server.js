@@ -14,7 +14,8 @@ const chatRoutes = require('./routes/chat');
 const workspaceRoutes = require('./routes/workspaces');
 
 app.use('/auth', authRoutes);
-app.use('/chat', chatRoutes);
+app.use('api/chat', chatRoutes);
+console.log('✅ Rota /chat registrada');
 app.use('/workspaces', workspaceRoutes);
 
 app.get('/', (req, res) => {
