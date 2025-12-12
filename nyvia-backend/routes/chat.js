@@ -3,7 +3,7 @@ const db = require('../config/database');
 const coordinator = require('../agents/coordinator');
 
 const router = express.Router();
-// Middleware de autenticação pode ser adicionado aqui se necessário
+// Middleware de autenticação pode ser adicionado aqui se necessário.
 router.post('/', async (req, res) => {  // Rota para processar mensagens de chat
   console.log('🔵 REQUISIÇÃO CHEGOU NO HANDLER');
   try {
