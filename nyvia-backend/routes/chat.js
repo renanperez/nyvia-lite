@@ -3,8 +3,9 @@ const db = require('../config/database');
 const coordinator = require('../agents/coordinator');
 
 const router = express.Router();
-
-router.post('/', async (req, res) => {
+// Middleware de autenticação pode ser adicionado aqui se necessário
+router.post('/', async (req, res) => {  // Rota para processar mensagens de chat
+  console.log('🔵 REQUISIÇÃO CHEGOU NO HANDLER');
   try {
     const { workspaceId, conversationId, message } = req.body;
     const workspace = db.getWorkspaceById(workspaceId);
