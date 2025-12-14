@@ -93,7 +93,7 @@ Resultado: Fluxo para testes ok
 
 
 
-MUDANÇAS DE DEV LOCAL PARA PRODUÇÃO
+MUDANÇAS DE DEV LOCAL PARA PRODUÇÃO: apenas em NYVIA-PRO
 
 Antes e depois do Proxy:
 
