@@ -1,11 +1,17 @@
 'use client'
 
 import { useState } from 'react'
+import Sidebar from './components/Sidebar'
 
 export default function Home() {
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState<Array<{role: string, content: string}>>([])
   const [isLoading, setIsLoading] = useState(false)
+
+  const handleNewChat = () => {
+    setMessages([])
+    setMessage('')
+  }
 
   const sendMessage = async () => {
     if (!message.trim()) return
@@ -66,35 +72,39 @@ export default function Home() {
   }
 
   return (
-    <div className="flex flex-col h-screen max-w-4xl mx-auto p-4 bg-white">
-      <h1 className="text-2xl font-bold mb-4 text-gray-900">Nyvia Chat</h1>
+    <div className="flex h-screen">
+      <Sidebar onNewChat={handleNewChat} />
       
-      <div className="flex-1 overflow-y-auto mb-4 space-y-4">
-        {messages.map((msg, i) => (
-          <div key={i} className={`p-3 rounded ${msg.role === 'user' ? 'bg-blue-50 text-gray-900' : 'bg-gray-50 text-gray-900'}`}>
-            <strong>{msg.role === 'user' ? 'Você' : 'Nyvia'}:</strong> {msg.content}
-          </div>
-        ))}
-      </div>
+      <main className="flex-1 flex flex-col max-w-4xl mx-auto w-full p-4">
+        <h1 className="text-2xl font-bold mb-4 text-gray-900">Nyvia Chat</h1>
+        
+        <div className="flex-1 overflow-y-auto mb-4 space-y-4">
+          {messages.map((msg, i) => (
+            <div key={i} className={`p-3 rounded ${msg.role === 'user' ? 'bg-blue-50 text-gray-900' : 'bg-gray-50 text-gray-900'}`}>
+              <strong>{msg.role === 'user' ? 'Você' : 'Nyvia'}:</strong> {msg.content}
+            </div>
+          ))}
+        </div>
 
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
-          placeholder="Digite sua mensagem..."
-          className="flex-1 p-2 border border-gray-300 rounded bg-white text-gray-900"
-          disabled={isLoading}
-        />
-        <button
-          onClick={sendMessage}
-          disabled={isLoading}
-          className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded disabled:opacity-50"
-        >
-          {isLoading ? 'Enviando...' : 'Enviar'}
-        </button>
-      </div>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
+            placeholder="Digite sua mensagem..."
+            className="flex-1 p-2 border border-gray-300 rounded bg-white text-gray-900"
+            disabled={isLoading}
+          />
+          <button
+            onClick={sendMessage}
+            disabled={isLoading}
+            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded disabled:opacity-50"
+          >
+            {isLoading ? 'Enviando...' : 'Enviar'}
+          </button>
+        </div>
+      </main>
     </div>
   )
 }
