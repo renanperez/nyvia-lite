@@ -28,8 +28,7 @@ const upload = multer({
   fileFilter: (req, file, cb) => {
     const allowedTypes = /pdf|docx|doc|txt|md/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
-    const mimetype = allowedTypes.test(file.mimetype);
-    if (extname && mimetype) {
+    if (extname) {
       cb(null, true);
     } else {
       cb(new Error('Apenas arquivos PDF, DOCX, DOC, TXT, MD são permitidos'));
