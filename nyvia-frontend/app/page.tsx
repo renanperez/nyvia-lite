@@ -1,12 +1,22 @@
 'use client'
 
-import { useState } from 'react'
-import Sidebar from './components/Sidebar'
+import { useState, useEffect } from 'react' //  react hooks    
+import { useRouter } from 'next/navigation' //  next.js router
+import Sidebar from './components/Sidebar'  //  sidebar component
 
 export default function Home() {
   const [message, setMessage] = useState('')
   const [messages, setMessages] = useState<Array<{role: string, content: string}>>([])
   const [isLoading, setIsLoading] = useState(false)
+
+  const router = useRouter()
+
+  useEffect(() => {
+    const token = localStorage.getItem('token')
+    if (!token) {
+      router.push('/login')
+    }
+  }, [router])
 
   const [activeWorkspaceId, setActiveWorkspaceId] = useState(1) // Default workspace ID used
     // In a real app, you might fetch this from user settings or similar
