@@ -11,7 +11,7 @@ if (!fs.existsSync(dbDir)) {
 
 const db = new Database(dbPath);
 db.pragma('foreign_keys = ON');
-
+// Inicializa o banco de dados com as tabelas necessárias
 function initDatabase() {
   db.exec(`
     CREATE TABLE IF NOT EXISTS users (
@@ -48,12 +48,24 @@ function initDatabase() {
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       FOREIGN KEY (conversation_id) REFERENCES conversations(id) ON DELETE CASCADE
     );
+
+    CREATE TABLE IF NOT EXISTS artifacts (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      workspace_id INTEGER NOT NULL,
+      filename TEXT NOT NULL,
+      original_name TEXT NOT NULL,
+      file_path TEXT NOT NULL,
+      file_type TEXT,
+      file_size INTEGER,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      FOREIGN KEY (workspace_id) REFERENCES workspaces(id) ON DELETE CASCADE
+    );
   `);
   console.log('✅ Banco de dados inicializado');
 }
 
 initDatabase();
-
+// Funções de acesso ao banco de dados
 module.exports = {
   db,
   isConnected: () => {
@@ -94,5 +106,18 @@ module.exports = {
   },
   getConversationHistory: (conversationId) => {
     return db.prepare('SELECT * FROM messages WHERE conversation_id = ? ORDER BY created_at').all(conversationId);
+  },
+  createArtifact: (workspaceId, filename, originalName, filePath, fileType, fileSize) => {
+    const stmt = db.prepare('INSERT INTO artifacts (workspace_id, filename, original_name, file_path, file_type, file_size) VALUES (?, ?, ?, ?, ?, ?)');
+    return stmt.run(workspaceId, filename, originalName, filePath, fileType, fileSize).lastInsertRowid;
+  },
+  getArtifactsByWorkspace: (workspaceId) => {
+    return db.prepare('SELECT * FROM artifacts WHERE workspace_id = ? ORDER BY created_at DESC').all(workspaceId);
+  },
+  getArtifactById: (id) => {
+    return db.prepare('SELECT * FROM artifacts WHERE id = ?').get(id);
+  },
+  deleteArtifact: (id) => {
+    return db.prepare('DELETE FROM artifacts WHERE id = ?').run(id);
   }
-};
+}; // module.exports

@@ -9,14 +9,18 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
+// Importação das rotas
 const authRoutes = require('./routes/auth');
 const chatRoutes = require('./routes/chat');
 const workspaceRoutes = require('./routes/workspaces');
+const artifactRoutes = require('./routes/artifacts');
 
+// Rotas
 app.use('/auth', authRoutes);
 app.use('/api/chat', chatRoutes);
 console.log('✅ Rota /api/chat registrada');
 app.use('/workspaces', workspaceRoutes);
+app.use('/artifacts', artifactRoutes);
 
 app.get('/', (req, res) => {
   res.json({
