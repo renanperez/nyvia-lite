@@ -10,7 +10,7 @@ export default function Home() {
   const [isLoading, setIsLoading] = useState(false)
 
   const router = useRouter()
-
+  // Redirect to login if not authenticated
   useEffect(() => {
     const token = localStorage.getItem('token')
     if (!token) {
@@ -18,10 +18,27 @@ export default function Home() {
     }
   }, [router])
 
-  const [activeWorkspaceId, setActiveWorkspaceId] = useState(1) // Default workspace ID used
-    // In a real app, you might fetch this from user settings or similar
+  // Fetch and set the user's default workspace on component mount
+  useEffect(() => {
+    const fetchUserWorkspace = async () => {
+      const token = localStorage.getItem('token')
+      if (!token) return
+      
+      const response = await fetch('/api/workspaces', {
+        headers: { 'Authorization': `Bearer ${token}` }
+      })
+      const data = await response.json()
+      if (data.workspaces?.length > 0) {
+        setActiveWorkspaceId(data.workspaces[0].id)
+      }
+    }
+    fetchUserWorkspace()
+  }, [])
 
-  const handleNewChat = () => {
+  const [activeWorkspaceId, setActiveWorkspaceId] = useState<number | undefined>(undefined)
+  // In a real app, you might fetch this from user settings or similar
+
+  function handleNewChat() {
     setMessages([])
     setMessage('')
   }
