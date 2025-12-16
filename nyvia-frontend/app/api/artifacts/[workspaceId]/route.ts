@@ -1,10 +1,11 @@
 export async function GET(
   request: Request,
-  { params }: { params: { workspaceId: string } }
+  { params }: { params: Promise<{ workspaceId: string }> }
 ) {
+  const { workspaceId } = await params
   const token = request.headers.get('Authorization')
   
-  const response = await fetch(`http://localhost:3001/artifacts/${params.workspaceId}`, {
+  const response = await fetch(`http://localhost:3001/artifacts/${workspaceId}`, {
     method: 'GET',
     headers: {
       'Authorization': token || '',
@@ -18,12 +19,13 @@ export async function GET(
 
 export async function POST(
   request: Request,
-  { params }: { params: { workspaceId: string } }
+  { params }: { params: Promise<{ workspaceId: string }> }
 ) {
+  const { workspaceId } = await params
   const token = request.headers.get('Authorization')
   const formData = await request.formData()
   
-  const response = await fetch(`http://localhost:3001/artifacts/${params.workspaceId}`, {
+  const response = await fetch(`http://localhost:3001/artifacts/${workspaceId}`, {
     method: 'POST',
     headers: {
       'Authorization': token || ''
