@@ -51,6 +51,9 @@ router.post('/:workspaceId', upload.single('file'), (req, res) => {
       return res.status(400).json({ error: 'Nenhum arquivo enviado' });
     }
 
+    console.log('🔍 Workspace ID:', workspaceId);
+    console.log('🔍 Workspace existe?', db.getWorkspaceById(workspaceId));
+    
     const artifactId = db.createArtifact(
       workspaceId,
       file.filename,
