@@ -18,7 +18,7 @@ export default function Home() {
     }
   }, [router])
 
-  // Fetch and set the user's default workspace on component mount
+  // Fetch and set the user's default workspace on component mount and set it as active workspace
   useEffect(() => {
     const fetchUserWorkspace = async () => {
       const token = localStorage.getItem('token')
@@ -27,8 +27,10 @@ export default function Home() {
       const response = await fetch('/api/workspaces', {
         headers: { 'Authorization': `Bearer ${token}` }
       })
+      
       const data = await response.json()
       if (data.workspaces?.length > 0) {
+        console.log('Setting workspace to:', data.workspaces[0].id)
         setActiveWorkspaceId(data.workspaces[0].id)
       }
     }
