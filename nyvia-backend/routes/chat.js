@@ -1,10 +1,14 @@
+const authMiddleware = require('../middleware/auth');
 const express = require('express');
 const db = require('../config/database');
 const coordinator = require('../agents/coordinator');
+const { readArtifactContent } = require('../utils/fileReader');
 
 const router = express.Router();
-// Middleware de autenticação pode ser adicionado aqui se necessário.
-router.post('/', async (req, res) => {  // Rota para processar mensagens de chat
+router.use(authMiddleware);
+// Middleware de autenticação
+
+router.post('/', async (req, res) => { // Rota para processar mensagens do usuário
   console.log('🔵 REQUISIÇÃO CHEGOU NO HANDLER');
   console.log('📦 Body:', req.body);
   try {
@@ -22,6 +26,28 @@ router.post('/', async (req, res) => {  // Rota para processar mensagens de chat
     res.setHeader('Cache-Control', 'no-cache');
     res.setHeader('Connection', 'keep-alive');
     
+    // Buscar e ler artifacts do workspace
+    const artifacts = db.getArtifactsByWorkspace(workspaceId);
+    let artifactsContext = '';
+
+    if (artifacts.length > 0) {
+      artifactsContext = '\n\n=== DOCUMENTOS DO CLIENTE ===\n';
+      for (const artifact of artifacts) {
+        const content = await readArtifactContent(artifact.file_path, artifact.file_type);
+        if (content) {
+          artifactsContext += `\n[${artifact.original_name}]\n${content}\n`;
+        }
+      }
+    }
+
+    // Adicionar artifacts ao histórico
+    if (artifactsContext) {
+      history.push({
+        role: 'system',
+        content: artifactsContext
+      });
+    }
+    // Processar mensagem com o coordenador de agentes
     const history = db.getConversationHistory(convId);
     let fullResponse = '';
     
@@ -29,7 +55,7 @@ router.post('/', async (req, res) => {  // Rota para processar mensagens de chat
       fullResponse += chunk;
       res.write(`data: ${JSON.stringify({ chunk })}\n\n`);
     });
-    
+    // Salvar resposta completa no banco de dados
     db.addMessage(convId, 'assistant', fullResponse);
     res.write(`data: ${JSON.stringify({ done: true, conversationId: convId })}\n\n`);
     res.end();
