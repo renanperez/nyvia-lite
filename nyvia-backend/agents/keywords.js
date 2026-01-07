@@ -20,6 +20,7 @@ Quando receber um briefing, forneça:
 IMPORTANTE: Você fornece inteligência, não copy pronto.`;
 
     // Construir o histórico de mensagens
+    // Separar mensagens do sistema e da conversa normal para manter o contexto
 
     const systemMessages = history.filter(m => m.role === 'system').map(m => m.content).join('\n\n');
     const conversationMessages = history.filter(m => m.role !== 'system').map(m => ({ role: m.role, content: m.content }));

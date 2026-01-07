@@ -1,6 +1,6 @@
-const Anthropic = require('@anthropic-ai/sdk');
 const keywordsAgent = require('./keywords');
 const metricsAnalyst = require('./metricsAnalyst');
+const Anthropic = require('@anthropic-ai/sdk');
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY
